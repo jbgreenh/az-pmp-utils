@@ -1,6 +1,6 @@
 [project]
 name = "az-pmp-utils"
-version = "0.1.1"
+version = "0.1.2"
 description = "utils for az pmp analytics work"
 readme = "README.md"
 authors = [
@@ -15,6 +15,7 @@ dependencies = [
     "polars>=1.36.1",
     "python-dotenv>=1.2.1",
     "tableauserverclient>=0.38",
+    "tzdata>=2025.3",
 ]
 
 [project.scripts]
