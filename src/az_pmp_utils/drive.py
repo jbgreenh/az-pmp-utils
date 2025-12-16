@@ -11,8 +11,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
-import auth
-from constants import EARLIEST_AWARXE_DATE, PHX_TZ
+from az_pmp_utils import auth
+from az_pmp_utils.constants import EARLIEST_AWARXE_DATE, PHX_TZ
 
 if TYPE_CHECKING:
     from pathlib import Path

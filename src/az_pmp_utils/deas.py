@@ -3,7 +3,7 @@ from typing import Literal
 
 import polars as pl
 
-import files
+from az_pmp_utils import files
 
 # ruff: noqa: ERA001
 # commented code is for alternate dea file formats

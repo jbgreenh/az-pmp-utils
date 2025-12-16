@@ -1,7 +1,7 @@
 from calendar import SATURDAY
 from datetime import date, timedelta
 
-from constants import AZ_HOLIDAYS
+from az_pmp_utils.constants import AZ_HOLIDAYS
 
 
 def ordinal(n: int) -> str:

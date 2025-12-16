@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 from googleapiclient.discovery import build
 
-import auth
+from az_pmp_utils import auth
 
 if TYPE_CHECKING:
     from pathlib import Path
