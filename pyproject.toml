@@ -15,7 +15,6 @@ dependencies = [
     "polars>=1.36.1",
     "python-dotenv>=1.2.1",
     "tableauserverclient>=0.38",
-    "tzdata>=2025.3",
 ]
 
 [project.scripts]
