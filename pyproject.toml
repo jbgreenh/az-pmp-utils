@@ -1,0 +1,26 @@
+[project]
+name = "az-pmp-utils"
+version = "0.1.0"
+description = "utils for az pmp analytics work"
+readme = "README.md"
+authors = [
+    { name = "jake g", email = "48000025+jbgreenh@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastexcel>=0.18.0",
+    "google-api-python-client>=2.187.0",
+    "google-auth-oauthlib>=1.2.3",
+    "google-cloud-pubsub>=2.33.0",
+    "polars>=1.36.1",
+    "python-dotenv>=1.2.1",
+    "tableauserverclient>=0.38",
+    "tzdata>=2025.3",
+]
+
+[project.scripts]
+az-pmp-utils = "az_pmp_utils:main"
+
+[build-system]
+requires = ["uv_build>=0.9.7,<0.10.0"]
+build-backend = "uv_build"
