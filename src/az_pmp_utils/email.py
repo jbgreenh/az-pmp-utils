@@ -43,7 +43,7 @@ def send_email(email_message: EmailMessage, *, service=None, draft=False) -> dic
     sends an email using the details in `email_message`
 
     args:
-        email_message: an `EmailMethod` witht he detals for sending the email
+        email_message: an `EmailMessage` with the detals for sending the email
         service: an authorized google email service, generated per email if not provided
         draft: whether to create a draft rather than send an email
 
