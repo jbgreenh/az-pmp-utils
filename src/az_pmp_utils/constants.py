@@ -1,7 +1,8 @@
 from datetime import date
 from zoneinfo import ZoneInfo
 
-DAYS_DELINQUENT_THRESHOLD = 7                               # min days delinquent that will put a dispenser on the weekly pharmacy cleanup report
+WEEKLY_DAYS_DELINQUENT_THRESHOLD = 7                        # min days delinquent to receive weekly notices
+DAILY_DAYS_DELINQUENT_THRESHOLD = 2                         # min days delinquent to receive daily notices
 EARLIEST_AWARXE_DATE = date(year=2022, month=12, day=7)     # the date of the earliest awarxe file
 MAX_SERVU_FILE_COUNT = 5                                    # the max number of files to keep on the servu
 PHX_TZ = ZoneInfo('America/Phoenix')                        # phoenix timezone
