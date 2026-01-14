@@ -6,7 +6,7 @@ DAILY_DAYS_DELINQUENT_THRESHOLD = 2                         # min days delinquen
 EARLIEST_AWARXE_DATE = date(year=2022, month=12, day=7)     # the date of the earliest awarxe file
 MAX_SERVU_FILE_COUNT = 5                                    # the max number of files to keep on the servu
 PHX_TZ = ZoneInfo('America/Phoenix')                        # phoenix timezone
-TOP_PRESCRIBERS = 20                                        # number of prescribers with the most dispensations and no searches for mandatory use reporting
+TOP_PRESCRIBERS = 40                                        # number of prescribers with the most dispensations and no searches for mandatory use reporting
 AZ_HOLIDAYS = {
     date(year=2025, month=1, day=1),
     date(year=2025, month=1, day=20),
