@@ -2,8 +2,7 @@ import sys
 import warnings
 from datetime import datetime
 from typing import TYPE_CHECKING
-
-from az_pmp_utils.constants import PHX_TZ
+from zoneinfo import ZoneInfo
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -17,7 +16,7 @@ def warn_file_age(file: Path, max_age_hours: int = 12) -> None:
         file: Path to the file in question
         max_age_hours: the max age, in hours, the file can be before triggering this warning
     """
-    file_age = datetime.now(tz=PHX_TZ) - datetime.fromtimestamp(file.stat().st_mtime, tz=PHX_TZ)
+    file_age = datetime.now(tz=ZoneInfo('America/Phoenix')) - datetime.fromtimestamp(file.stat().st_mtime, tz=ZoneInfo('America/Phoenix'))
     if (file_age.total_seconds() / 60 / 60) > max_age_hours:
         msg = (
             f'`{file}` has not been updated recently!\n'

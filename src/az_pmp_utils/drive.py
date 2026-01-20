@@ -12,7 +12,7 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 from az_pmp_utils import auth
-from az_pmp_utils.constants import EARLIEST_AWARXE_DATE, PHX_TZ
+from az_pmp_utils.constants import EARLIEST_AWARXE_DATE
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -139,7 +139,7 @@ def get_latest_uploaded(folder_id: str, drive_ft: DriveFileType, service=None, *
 
             file_ct = files[0]['createdTime']
             file_ts = datetime.datetime.strptime(file_ct, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=ZoneInfo('UTC'))
-            phx_ts = file_ts.astimezone(PHX_TZ)
+            phx_ts = file_ts.astimezone(ZoneInfo('America/Phoenix'))
 
             try:
                 if drive_ft == 'csv':
@@ -222,7 +222,7 @@ def awarxe(day: datetime.date | None = None, service=None) -> pl.LazyFrame:   # 
     if service is None:
         service = build('drive', 'v3', credentials=auth.auth())
 
-    yesterday = datetime.datetime.now(tz=PHX_TZ).date() - datetime.timedelta(days=1)
+    yesterday = datetime.datetime.now(tz=ZoneInfo('America/Phoenix')).date() - datetime.timedelta(days=1)
     day = max(min(day or yesterday, yesterday), EARLIEST_AWARXE_DATE)
 
     load_dotenv()
