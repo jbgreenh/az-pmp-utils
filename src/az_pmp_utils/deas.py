@@ -50,7 +50,7 @@ def deas(p: DeaSelector = 'all', *, az: bool = True) -> pl.LazyFrame:  # noqa: R
         offset += w
 
     cs_active_path = Path('data/cs_active.txt')
-    files.warn_file_age(cs_active_path)
+    files.warn_file_age(cs_active_path, 15)
 
     # using unit separator '\x1F' to trick pyarrow into only making one col, unlikely to make its way into this latin-1 file
     deas = pl.read_csv(cs_active_path, encoding='latin-1', has_header=False, new_columns=['full_str'], use_pyarrow=True, separator='\x1F')
