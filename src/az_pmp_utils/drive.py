@@ -47,12 +47,12 @@ def lazyframe_from_file_name(file_name: str, folder_id: str, drive_ft: DriveFile
         service: an authorized google drive service
         **kwargs: kwargs for `pl.read_csv()`
 
+    returns:
+        a pl.LazyFrame with the contents of the csv
+
     raises:
         GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
         GoogleDriveNotFoundError : raised when the file is not found on the google drive
-
-    returns:
-        a pl.LazyFrame with the contents of the csv
     """
     if service is None:
         service = build('drive', 'v3', credentials=auth.auth())
@@ -114,12 +114,12 @@ def get_latest_uploaded(folder_id: str, drive_ft: DriveFileType, service=None, *
         service: a google drive service
         **kwargs: kwargs to pass to `pl.scan_csv()`
 
+    returns:
+        a LatestFile object containing a lazyframe and the created time
+
     raises:
         GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
         GoogleDriveNotFoundError : raised when the file is not found on the google drive
-
-    returns:
-        a LatestFile object containing a lazyframe and the created time
     """
     if service is None:
         service = build('drive', 'v3', credentials=auth.auth())
@@ -178,11 +178,11 @@ def lazyframe_from_id_and_sheetname(file_id: str, sheet_name: str, service=None,
         service: an authorized google drive service
         **kwargs: kwargs for `pl.read_excel()`
 
-    raises:
-        GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
-
     returns:
         a pl.LazyFrame with the contents of the sheet
+
+    raises:
+        GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
     """
     if service is None:
         service = build('drive', 'v3', credentials=auth.auth())
@@ -212,12 +212,12 @@ def awarxe(day: datetime.date | None = None, service=None) -> pl.LazyFrame:   # 
         day: the day for the awarxe file
         service: an authorized google drive service
 
+    returns:
+       awarxe: a lazyframe with all active awarxe registrants from the most recent file as of `day` if specified, or yesterday if `day` is not specified
+
     raises:
         GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
         GoogleDriveNotFoundError : raised when the file is not found on the google drive
-
-    returns:
-       awarxe: a lazyframe with all active awarxe registrants from the most recent file as of `day` if specified, or yesterday if `day` is not specified
     """
     if service is None:
         service = build('drive', 'v3', credentials=auth.auth())
@@ -285,12 +285,12 @@ def folder_id_from_name(folder_name: str, parent_folder_id: str, service=None, *
         service: an authorized google drive service
         create: whether to create the folder or not if it doesn't exist
 
+    returns:
+       folder_id: the id of the folder with `folder_name`
+
     raises:
         GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
         GoogleDriveNotFoundError : raised when the file is not found on the google drive
-
-    returns:
-       folder_id: the id of the folder with `folder_name`
     """
     if service is None:
         service = build('drive', 'v3', credentials=auth.auth())
@@ -329,13 +329,13 @@ def upload_csv_as_sheet(file_path: Path, folder_id: str, service=None) -> None: 
         eg. 'file.csv' -> 'file'
         you may want to remove the csv after this upload for cleanliness or use a tempfile
 
-    raises:
-        GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
-
     args:
         file_path: the path to the local csv for uploading
         folder_id: the id of the folder to upload to
         service: an authorized google drive service
+
+    raises:
+        GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
     """
     if service is None:
         service = build('drive', 'v3', credentials=auth.auth())
@@ -365,34 +365,55 @@ def upload_csv_as_sheet(file_path: Path, folder_id: str, service=None) -> None: 
         raise GoogleDriveHttpError(msg) from error
 
 
-def update_sheet(file_path: Path, file_id: str, service=None) -> None:    # noqa: ANN001 | service is dynamically typed
+def update_sheet(file_path: Path, file_id: str, sheet_name: str | None = None) -> None:
     """
         uses the contents of a local csv file to update the sheet at the specified `file_id`
+        if `sheet_name` is provided, the tab will be filled starting at A1
 
         you may want to remove the csv after this upload for cleanliness
 
     args:
         file_path: the path to the local csv file to use for updating
         file_id: the id of the file to be updated
-        service: an authorized google drive service
+        sheet_name: the name of the sheet to update
 
     raises:
         GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
     """
-    if service is None:
-        service = build('drive', 'v3', credentials=auth.auth())
-
     try:
-        media = MediaFileUpload(file_path,
-                                mimetype='text/csv')
+        if sheet_name is None:
+            service = build('drive', 'v3', credentials=auth.auth())
 
-        print(f'updating {file_id} with {file_path}...')
+            media = MediaFileUpload(file_path,
+                                    mimetype='text/csv')
 
-        file = service.files().update(fileId=file_id,
-                                      media_body=media,
-                                      supportsAllDrives=True,
-                                      fields='webViewLink').execute()
-        print(f'uploaded to: {file.get("webViewLink")}')
+            print(f'updating {file_id} with {file_path}...')
+
+            file = service.files().update(fileId=file_id,
+                                          media_body=media,
+                                          supportsAllDrives=True,
+                                          fields='webViewLink').execute()
+            print(f'uploaded to: {file.get("webViewLink")}')
+
+        else:
+            service = build('sheets', 'v4', credentials=auth.auth())
+
+            df = pl.read_csv(file_path, infer_schema=False)
+
+            headers = df.columns()
+            rows = df.to_numpy().tolist()
+            values = [headers, *rows]
+
+            body = {'values': values}
+            print(f'updating tab {sheet_name} in {file_id} with {file_path}...')
+
+            result = service.spreadsheets().values().update(
+                spreadsheetId=file_id,
+                range=f"'{sheet_name}'!A1",
+                valueInputOption='RAW',
+                body=body,
+            ).execute()
+            print(f'updated {result.get('updatedCells')} cells in tab {sheet_name}')
 
     except HttpError as error:
         msg = f'an error occurred: {error!r}'
