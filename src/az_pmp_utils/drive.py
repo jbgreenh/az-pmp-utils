@@ -400,8 +400,8 @@ def update_sheet(file_path: Path, file_id: str, sheet_name: str | None = None) -
 
             df = pl.read_csv(file_path, infer_schema=False)
 
-            headers = df.columns()
-            rows = df.to_numpy().tolist()
+            headers = df.columns
+            rows = [list(row) for row in df.rows()]
             values = [headers, *rows]
 
             body = {'values': values}
