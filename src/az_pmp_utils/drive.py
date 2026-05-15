@@ -407,6 +407,11 @@ def update_sheet(file_path: Path, file_id: str, sheet_name: str | None = None) -
             body = {'values': values}
             print(f'updating tab {sheet_name} in {file_id} with {file_path}...')
 
+            service.spreadsheets().values().clear(
+                spreadsheetId=file_id,
+                range=f"'{sheet_name}'"
+            ).execute()
+
             result = service.spreadsheets().values().update(
                 spreadsheetId=file_id,
                 range=f"'{sheet_name}'!A1",
