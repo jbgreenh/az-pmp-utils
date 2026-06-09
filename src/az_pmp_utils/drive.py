@@ -423,38 +423,3 @@ def update_sheet(file_path: Path, file_id: str, sheet_name: str | None = None) -
     except HttpError as error:
         msg = f'an error occurred: {error!r}'
         raise GoogleDriveHttpError(msg) from error
-
-
-def create_folder(folder_name: str, parent_folder_id: str, service=None) -> str:  # noqa: ANN001 | service is dynamically typed
-    """
-    args:
-        folder_name: the name of the folder to be created
-        parent_folder_id: the id of the folder in which to create the new folder
-        service: an authorized google drive service
-
-    returns:
-        the id of the new folder
-
-    raises:
-        GoogleDriveHttpError : raised when accessing google drive leads to an HttpError
-    """
-    try:
-        if service is None:
-            service = build('drive', 'v3', credentials=auth.auth())
-
-        file_metadata = {
-            'name': folder_name,
-            'mimeType': 'application/vnd.google-apps.folder',
-            'parent': parent_folder_id,
-        }
-
-        file = service.files().create(body=file_metadata, fields='id').execute()
-        new_folder_id = file.get('id')
-        print(f'{folder_name} folder created with id: {new_folder_id}')
-
-    except HttpError as error:
-        msg = f'an error occurred: {error!r}'
-        raise GoogleDriveHttpError(msg) from error
-
-    else:
-        return new_folder_id
