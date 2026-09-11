@@ -5,13 +5,10 @@ import polars as pl
 
 from az_pmp_utils import files
 
-# ruff: noqa: ERA001
-# commented code is for alternate dea file formats
-
 type DeaSelector = Literal['all', 'presc', 'pharm']
 
 
-def deas(p: DeaSelector = 'all', *, az: bool = True) -> pl.LazyFrame:  # noqa: RET503 | function returns for all possible p values
+def deas(p: DeaSelector = 'all', *, az: bool = True, short: bool = False) -> pl.LazyFrame:  # ruff: ignore[implicit-return] | function returns for all possible p values
     """
     returns a lazyframe from the full dea fixed width file
 
@@ -22,24 +19,25 @@ def deas(p: DeaSelector = 'all', *, az: bool = True) -> pl.LazyFrame:  # noqa: R
             for all registrants: all
 
         az: whether to filter to just az
+        short: whether or not to use the shorter dea file format
 
     returns:
     a lazyframe filtered as indicated through `p`
     """
-    # widths and names according to the file format specifications provided by the DEA
-    # dea_widths = [9, 1, 16, 8, 40, 40, 40, 40, 33, 2, 5, 2, 1, 8, 10, 20, 20]
-    dea_widths = [9, 1, 2, 40, 40, 40, 40, 33, 2, 9, 8, 8, 12, 3, 9, 13, 15, 15]
-
-    # dea_names = [
-    #     'DEA Number', 'Business Activity Code', 'Drug Schedules', 'Expiration Date', 'Name',
-    #     'Additional Company Info', 'Address 1', 'Address 2', 'City', 'State', 'Zip Code', 'Business Activity Sub Code',
-    #     'Payment Indicator', 'Activity', 'Degree', 'State License Number', 'State CS License Number'
-    #     ]
-
-    dea_names = [
-        'DEA Number', 'Business Activity Code', 'Business Activity Sub Code', 'Name', 'Address 1',
-        'Address 2', 'Address 3', 'City', 'State', 'Zip Code', 'Date of Original Registration', 'Expiration Date', 'Drug Schedules',
-        'Degree', 'SSN', 'Tax ID', 'State License Number', 'State CS License Number'
+    if not short:
+        # widths and names according to the file format specifications provided by the DEA
+        dea_widths = [9, 1, 2, 40, 40, 40, 40, 33, 2, 9, 8, 8, 12, 3, 9, 13, 15, 15]
+        dea_names = [
+            'DEA Number', 'Business Activity Code', 'Business Activity Sub Code', 'Name', 'Address 1',
+            'Address 2', 'Address 3', 'City', 'State', 'Zip Code', 'Date of Original Registration', 'Expiration Date', 'Drug Schedules',
+            'Degree', 'SSN', 'Tax ID', 'State License Number', 'State CS License Number'
+        ]
+    else:
+        dea_widths = [9, 1, 16, 8, 40, 40, 40, 40, 33, 2, 5, 2, 1, 8, 10, 20, 20]
+        dea_names = [
+            'DEA Number', 'Business Activity Code', 'Drug Schedules', 'Expiration Date', 'Name',
+            'Additional Company Info', 'Address 1', 'Address 2', 'City', 'State', 'Zip Code', 'Business Activity Sub Code',
+            'Payment Indicator', 'Activity', 'Degree', 'State License Number', 'State CS License Number'
         ]
 
     slice_tuples = []
