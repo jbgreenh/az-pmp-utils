@@ -1,6 +1,6 @@
 [project]
 name = "az-pmp-utils"
-version = "0.2.4"
+version = "0.2.5"
 description = "utils for az pmp analytics work"
 readme = "README.md"
 authors = [{ name = "jake g", email = "48000025+jbgreenh@users.noreply.github.com" }]
@@ -20,7 +20,7 @@ dependencies = [
 az-pmp-utils = "az_pmp_utils:main"
 
 [build-system]
-requires = ["uv_build>=0.9.7,<0.10.0"]
+requires = ["uv_build>=0.9.7,<0.14.0"]
 build-backend = "uv_build"
 
 [tool.basedpyright]
