@@ -74,11 +74,13 @@ def deas(p: DeaSelector = 'all', *, az: bool = True, short: bool = False) -> pl.
         return deas_pharm.lazy()
 
     if p == 'presc':
+        # does not include federal or military prescribers
         sub_codes = ['5', '6', '7', '8', 'A', 'B', 'C', 'D', 'J']
         deas_presc = (
             deas
             .filter(
-                (pl.col('Business Activity Code') == 'C') | ((pl.col('Business Activity Code') == 'M') & pl.col('Business Activity Sub Code').is_in(sub_codes))
+                ((pl.col('Business Activity Code') == 'C') & (pl.col('Business Activity Sub Code') == '0')) |
+                ((pl.col('Business Activity Code') == 'M') & pl.col('Business Activity Sub Code').is_in(sub_codes))
             )
         )
         return deas_presc.lazy()
