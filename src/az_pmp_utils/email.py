@@ -5,14 +5,11 @@ from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import TYPE_CHECKING
+lazy from pathlib import Path
 
 from googleapiclient.discovery import build
 
 from az_pmp_utils import auth
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 
 @dataclass
@@ -38,7 +35,7 @@ class EmailMessage:
     monospace: bool = False
 
 
-def send_email(email_message: EmailMessage, *, service=None, draft=False) -> dict:    # noqa: ANN001 | service is dynamically typed
+def send_email(email_message: EmailMessage, *, service=None, draft=False) -> dict:    # ruff: ignore[missing-type-function-argument] | service is dynamically typed
     """
     sends an email using the details in `email_message`
 
