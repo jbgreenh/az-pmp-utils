@@ -2,9 +2,8 @@ import datetime
 import io
 import os
 from dataclasses import dataclass
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 from zoneinfo import ZoneInfo
-lazy from pathlib import Path
 
 import polars as pl
 from dotenv import load_dotenv
@@ -14,6 +13,9 @@ from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 
 from az_pmp_utils import auth
 from az_pmp_utils.constants import EARLIEST_AWARXE_DATE
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 type DriveFileType = Literal['sheet', 'csv']
 
@@ -34,7 +36,7 @@ class GoogleDriveNotFoundError(Exception):
         super().__init__(self.message)
 
 
-def lazyframe_from_file_name(file_name: str, folder_id: str, drive_ft: DriveFileType, service=None, **kwargs) -> pl.LazyFrame:  # ruff: ignore[missing-type-function-argument] | service is dynamically typed
+def lazyframe_from_file_name(file_name: str, folder_id: str, drive_ft: DriveFileType, service=None, **kwargs) -> pl.LazyFrame:  # noqa: ANN001 | service is dynamically typed
     """
         return a lazyframe of the csv in the provided folder
 
@@ -102,7 +104,7 @@ class LatestFile:
     created_at: datetime.datetime
 
 
-def get_latest_uploaded(folder_id: str, drive_ft: DriveFileType, service=None, **kwargs) -> LatestFile:  # ruff: ignore[missing-type-function-argument] | service is dynamically typed
+def get_latest_uploaded(folder_id: str, drive_ft: DriveFileType, service=None, **kwargs) -> LatestFile:  # noqa: ANN001 | service is dynamically typed
     """
     get the latest uploaded file in the google drive folder at `folder_id`
 
@@ -166,7 +168,7 @@ def get_latest_uploaded(folder_id: str, drive_ft: DriveFileType, service=None, *
     return LatestFile(lf=pl.scan_csv(file, **kwargs), created_at=phx_ts)
 
 
-def lazyframe_from_id_and_sheetname(file_id: str, sheet_name: str, service=None, **kwargs) -> pl.LazyFrame:  # ruff: ignore[missing-type-function-argument] | service is dynamically typed
+def lazyframe_from_id_and_sheetname(file_id: str, sheet_name: str, service=None, **kwargs) -> pl.LazyFrame:  # noqa: ANN001 | service is dynamically typed
     """
         return a lazyframe given a `file_id` and `sheet_name`
 
@@ -202,7 +204,7 @@ def lazyframe_from_id_and_sheetname(file_id: str, sheet_name: str, service=None,
     return pl.read_excel(file, sheet_name=sheet_name, **kwargs).lazy()
 
 
-def awarxe(day: datetime.date | None = None, service=None) -> pl.LazyFrame:   # ruff: ignore[missing-type-function-argument] | service is dynamically typed
+def awarxe(day: datetime.date | None = None, service=None) -> pl.LazyFrame:   # noqa: ANN001 | service is dynamically typed
     """
         return a lazy frame of the most recent awarxe file from the google drive, unless day is specified
 
@@ -273,7 +275,7 @@ def awarxe(day: datetime.date | None = None, service=None) -> pl.LazyFrame:   # 
             raise GoogleDriveHttpError(msg) from error
 
 
-def folder_id_from_name(folder_name: str, parent_folder_id: str, service=None, *, create: bool = False) -> str:  # ruff: ignore[missing-type-function-argument] | service is dynamically typed
+def folder_id_from_name(folder_name: str, parent_folder_id: str, service=None, *, create: bool = False) -> str:  # noqa: ANN001 | service is dynamically typed
     """
         returns the `folder_id` of the `folder_name` in the parent folder
 
@@ -319,7 +321,7 @@ def folder_id_from_name(folder_name: str, parent_folder_id: str, service=None, *
         return folder_id
 
 
-def upload_csv_as_sheet(file_path: Path, folder_id: str, service=None) -> None:  # ruff: ignore[missing-type-function-argument] | service is dynamically typed
+def upload_csv_as_sheet(file_path: Path, folder_id: str, service=None) -> None:  # noqa: ANN001 | service is dynamically typed
     """
         uploads a local csv file as a sheet to the specified folder, `file_name` is the path to the local csv
 

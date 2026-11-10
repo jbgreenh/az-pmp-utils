@@ -1,8 +1,11 @@
 import sys
 import warnings
 from datetime import datetime
+from typing import TYPE_CHECKING
 from zoneinfo import ZoneInfo
-lazy from pathlib import Path
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def warn_file_age(file: Path, max_age_hours: int = 12) -> None:
